@@ -52,3 +52,30 @@ const unsigned long NIGHT_FLASH_MS = 600;  // blink speed at night
 const unsigned long N_PASS_GREEN_MS  = 4000; // 4 seconds green
 const unsigned long N_PASS_YELLOW_MS = 1500; // 1.5 seconds yellow
 const unsigned long N_PASS_RED_MS    = 2500; // 2.5 seconds red
+
+// ==========================
+//      MODES & STATES
+// ==========================
+// MODE = are we in Day or Night?
+// LightState = which light pattern is currently active?
+enum Mode { MODE_DAY, MODE_NIGHT };
+enum LightState {
+  L_GREEN,
+  L_YELLOW,
+  L_RED,
+  L_FLASH_YELLOW,   // Night-only: blink yellow on/off
+  L_NPASS_GREEN,    // Night-only: PIR short cycle (green)
+  L_NPASS_YELLOW,   // Night-only: PIR short cycle (yellow)
+  L_NPASS_RED       // Night-only: PIR short cycle (red), then back to flash
+};
+
+Mode mode = MODE_DAY;            // current mode (starts decided in setup)
+LightState lightState = L_RED;   // current light state
+
+// "Timers" based on ms() so we never block with delay()
+unsigned long stateStart = 0;      // when did we enter the current state?
+unsigned long lastFlashToggle = 0; // last time we toggled the night flash
+bool flashOn = false;              // is the yellow currently lit during flash?
+
+// Smoothed LDR value (float) so we can use the exponential filter
+float ldrFiltered = 0;
