@@ -91,3 +91,19 @@ void setLights(bool r, bool y, bool g) {
   digitalWrite(PIN_LED_YEL,   y ? HIGH : LOW);
   digitalWrite(PIN_LED_GRN,   g ? HIGH : LOW);
 }
+
+// Switch to a given light state and remember WHEN it happened.
+void enterState(LightState s) {
+  lightState = s;
+  stateStart = millis();
+
+  switch (s) {
+    case L_GREEN:         setLights(false, false, true);  break;  // Green ON
+    case L_YELLOW:        setLights(false, true,  false); break;  // Yellow ON
+    case L_RED:           setLights(true,  false, false); break;  // Red ON
+    case L_FLASH_YELLOW:  /* flashing handled in loop() */ break; // We'll blink yellow
+    case L_NPASS_GREEN:   setLights(false, false, true);  break;  // Night pass: Green
+    case L_NPASS_YELLOW:  setLights(false, true,  false); break;  // Night pass: Yellow
+    case L_NPASS_RED:     setLights(true,  false, false); break;  // Night pass: Red
+  }
+}
