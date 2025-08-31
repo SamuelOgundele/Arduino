@@ -107,3 +107,18 @@ void enterState(LightState s) {
     case L_NPASS_RED:     setLights(true,  false, false); break;  // Night pass: Red
   }
 }
+
+// Change between DAY and NIGHT modes.
+// - In DAY: start regular cycle (Green)
+// - In NIGHT: prepare for blinking yellow
+void enterMode(Mode m) {
+  mode = m;
+  if (mode == MODE_DAY) {
+    enterState(L_GREEN);  // Start day cycle on green
+  } else { // MODE_NIGHT
+    flashOn = false;                        // start with yellow OFF
+    lastFlashToggle = millis();             // reset flash timer
+    setLights(false, false, false);         // make sure all LEDs are off
+    enterState(L_FLASH_YELLOW);             // go to flashing yellow state
+  }
+}
