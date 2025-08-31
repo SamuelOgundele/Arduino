@@ -14,3 +14,17 @@
 */
 
 #include <Arduino.h>
+
+// ==========================
+//           PINS
+// ==========================
+// These are the Arduino pins your parts connect to.
+// If your LEDs are on different pins, just change the numbers here.
+const uint8_t PIN_LDR      = A0;   // LDR (photoresistor) voltage divider junction
+const uint8_t PIN_LED_RED  = 8;    // Red LED (through a 220Ω resistor to GND)
+const uint8_t PIN_LED_YEL  = 9;    // Yellow LED (through a 220Ω resistor to GND)
+const uint8_t PIN_LED_GRN  = 10;   // Green LED (through a 220Ω resistor to GND)
+const uint8_t PIN_PIR      = 2;    // Optional PIR motion sensor (OUT pin)
+
+// Turn PIR support on/off here. Leave false if you don't have a PIR connected.
+const bool USE_PIR = false;
