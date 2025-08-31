@@ -122,3 +122,40 @@ void enterMode(Mode m) {
     enterState(L_FLASH_YELLOW);             // go to flashing yellow state
   }
 }
+
+// ==========================
+//           SETUP
+// ==========================
+// Runs once after power-up/reset.
+void setup() {
+  // Set LED pins to OUTPUT so we can turn them on/off.
+  pinMode(PIN_LED_RED, OUTPUT);
+  pinMode(PIN_LED_YEL, OUTPUT);
+  pinMode(PIN_LED_GRN, OUTPUT);
+
+  // LDR is an analog input (voltage divider). No special mode needed.
+  pinMode(PIN_LDR, INPUT);
+
+  // PIR (optional). Most common modules (HC-SR501) drive HIGH/LOW themselves,
+  // so INPUT is fine. If your sensor has an open-collector output, use INPUT_PULLUP.
+  if (USE_PIR) pinMode(PIN_PIR, INPUT);
+
+  // Make sure all LEDs start OFF.
+  setLights(false, false, false);
+
+  // Start serial so we can see values in Tools → Serial Plotter (9600 is fine).
+  Serial.begin(9600);
+  delay(50); // small pause so Serial is ready on some boards
+
+  // // Average 20 LDR readings to smooth out startup noise
+  long sum = 0;
+  for (int i = 0; i < 20; i++) {
+    sum += analogRead(PIN_LDR);
+    delay(5);
+  }
+  ldrFiltered = sum / 20.0;
+
+  // Decide initial mode right now based on the current light level.
+  // If it's bright → day, if it's dark → night.
+  enterMode(ldrFiltered >= DAY_ENTER ? MODE_DAY : MODE_NIGHT);
+}
