@@ -36,3 +36,19 @@ const float LDR_ALPHA = 0.12f;
 //Use 2 thresholds so the mode doesn't keep flipping back and forth.
 int DAY_ENTER   = 650;  // brighter than this → day
 int NIGHT_ENTER = 450;  // darker than this  → night
+
+// ==========================
+//         Timing (ms)
+// ==========================
+// How long each light stays on (in milliseconds).
+const unsigned long DAY_GREEN_MS   = 6000; // 6 seconds green
+const unsigned long DAY_YELLOW_MS  = 2000; // 2 seconds yellow
+const unsigned long DAY_RED_MS     = 4000; // 4 seconds red
+
+// Night mode: flash yellow every NIGHT_FLASH_MS milliseconds.
+const unsigned long NIGHT_FLASH_MS = 600;  // blink speed at night
+
+//(Optional) When using PIR at night, do a short cycle so a car/person can go.
+const unsigned long N_PASS_GREEN_MS  = 4000; // 4 seconds green
+const unsigned long N_PASS_YELLOW_MS = 1500; // 1.5 seconds yellow
+const unsigned long N_PASS_RED_MS    = 2500; // 2.5 seconds red
