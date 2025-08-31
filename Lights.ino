@@ -159,3 +159,33 @@ void setup() {
   // If it's bright → day, if it's dark → night.
   enterMode(ldrFiltered >= DAY_ENTER ? MODE_DAY : MODE_NIGHT);
 }
+
+// ==========================
+//            LOOP
+// ==========================
+// Runs over and over, very fast.
+// We NEVER use delay() here so the system stays responsive.
+void loop() {
+  // 1) READ & SMOOTH THE LDR 
+  int ldrRaw = analogRead(PIN_LDR);
+  ldrFiltered = LDR_ALPHA * ldrRaw + (1.0f - LDR_ALPHA) * ldrFiltered; // smooths it
+
+  // Print values for the Serial Plotter:
+  //   Line 1 = filtered LDR value,
+  //   Line 2 = DAY_ENTER threshold,
+  //   Line 3 = NIGHT_ENTER threshold.
+  // This lets you see where your room's light sits vs the thresholds.
+  Serial.print(ldrFiltered); Serial.print(',');
+  Serial.print(DAY_ENTER);   Serial.print(',');
+  Serial.println(NIGHT_ENTER);
+
+  // 2) PICK MODE (DAY/NIGHT) USING HYSTERESIS
+  // Only switch when we really cross the threshold(to avoid rapid flickering).
+  if (mode == MODE_NIGHT && ldrFiltered >= DAY_ENTER) {
+    enterMode(MODE_DAY);
+  } else if (mode == MODE_DAY && ldrFiltered <= NIGHT_ENTER) {
+    enterMode(MODE_NIGHT);
+  }
+
+  // Used "currentMillis" to check timers without blocking.
+  unsigned long currentMillis = millis();
