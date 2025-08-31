@@ -28,3 +28,11 @@ const uint8_t PIN_PIR      = 2;    // Optional PIR motion sensor (OUT pin)
 
 // Turn PIR support on/off here. Leave false if you don't have a PIR connected.
 const bool USE_PIR = false;
+
+// LDR Filter & Thresholds
+// LDR_ALPHA: 0..1 (higher = faster response, lower = smoother).
+const float LDR_ALPHA = 0.12f;
+
+//Use 2 thresholds so the mode doesn't keep flipping back and forth.
+int DAY_ENTER   = 650;  // brighter than this → day
+int NIGHT_ENTER = 450;  // darker than this  → night
