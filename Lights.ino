@@ -79,3 +79,15 @@ bool flashOn = false;              // is the yellow currently lit during flash?
 
 // Smoothed LDR value (float) so we can use the exponential filter
 float ldrFiltered = 0;
+
+// ==========================
+//   LIGHT CONTROL FUNCTIONS
+// ==========================
+
+// Turn specific LEDs on/off in one go.
+// Usage: setLights(redOn, yellowOn, greenOn);
+void setLights(bool r, bool y, bool g) {
+  digitalWrite(PIN_LED_RED,   r ? HIGH : LOW);
+  digitalWrite(PIN_LED_YEL,   y ? HIGH : LOW);
+  digitalWrite(PIN_LED_GRN,   g ? HIGH : LOW);
+}
