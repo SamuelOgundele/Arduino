@@ -220,3 +220,40 @@ void loop() {
     if (USE_PIR && lightState == L_FLASH_YELLOW && digitalRead(PIN_PIR) == HIGH) {
       enterState(L_NPASS_GREEN);
     }
+
+    switch (lightState) {
+      case L_FLASH_YELLOW: {
+        // Toggle yellow LED on/off without blocking.
+        if (currentMillis - lastFlashToggle >= NIGHT_FLASH_MS) {
+          lastFlashToggle = currentMillis;
+          flashOn = !flashOn;
+          setLights(false, flashOn, false); // only Yellow changes
+        }
+        break;
+      }
+
+      case L_NPASS_GREEN:
+        // Keep green on for a bit so someone can pass
+        if (currentMillis - stateStart >= N_PASS_GREEN_MS) enterState(L_NPASS_YELLOW);
+        break;
+
+      case L_NPASS_YELLOW:
+        if (currentMillis - stateStart >= N_PASS_YELLOW_MS) enterState(L_NPASS_RED);
+        break;
+
+      case L_NPASS_RED:
+        if (currentMillis - stateStart >= N_PASS_RED_MS) {
+          // After the short pass cycle, go back to flashing yellow.
+          enterState(L_FLASH_YELLOW);
+          flashOn = false;                 // start next flash with yellow off
+          setLights(false, false, false);  // ensure everything is off
+          lastFlashToggle = currentMillis; // reset flash timer
+        }
+        break;
+
+      default: // Safety net: if we end up in a day-only state, recover
+        enterState(L_FLASH_YELLOW);
+        break;
+    }
+  }
+}
