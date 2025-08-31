@@ -189,3 +189,34 @@ void loop() {
 
   // Used "currentMillis" to check timers without blocking.
   unsigned long currentMillis = millis();
+
+  // 3) RUN THE LIGHT STATE MACHINE
+  if (mode == MODE_DAY) {
+    // Regular traffic cycle during the day: Green → Yellow → Red → Green ...
+    switch (lightState) {
+      case L_GREEN:
+        if (currentMillis - stateStart >= DAY_GREEN_MS) enterState(L_YELLOW);
+        break;
+
+      case L_YELLOW:
+        if (currentMillis - stateStart >= DAY_YELLOW_MS) enterState(L_RED);
+        break;
+
+      case L_RED:
+        if (currentMillis - stateStart >= DAY_RED_MS) enterState(L_GREEN);
+        break;
+
+      default: // If we somehow got here in a night-only state, recover:
+        enterState(L_GREEN);
+        break;
+    }
+
+  } else {
+    // NIGHT MODE
+    // Default behavior: Blink yellow on/off forever.
+    // If PIR is enabled and detects motion, run a short "pass" cycle.
+
+    // If we're flashing and motion happens, start the short pass cycle.
+    if (USE_PIR && lightState == L_FLASH_YELLOW && digitalRead(PIN_PIR) == HIGH) {
+      enterState(L_NPASS_GREEN);
+    }
